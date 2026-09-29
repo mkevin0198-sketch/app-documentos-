@@ -10,11 +10,14 @@
   --accent:#0b63ce;--accent2:#084d9e;--header:rgba(255,255,255,.97);
   --soft:#eef3f8;--danger:#b42318;--danger-bg:#fff1f0;--ok:#067647;--ok-bg:#ecfdf3
 }
-body.dark{
+html.dark,body.dark{
   --bg:#0f1115;--card:#171a20;--text:#f3f4f6;--muted:#aab2bf;--line:#2d333d;
   --accent:#6fb1ff;--accent2:#91c4ff;--header:rgba(18,20,25,.97);
   --soft:#262b33;--danger:#ff8a80;--danger-bg:#2d1b1b;--ok:#75e0a7;--ok-bg:#173425
 }
+html{color-scheme:light}
+html.dark{color-scheme:dark}
+body{min-height:100vh;min-height:100dvh}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
@@ -118,9 +121,57 @@ textarea{min-height:74px;resize:vertical}
   .screen{padding-left:11px;padding-right:11px}
   .manage-head{display:block}
 }
+
+[hidden]{display:none!important}
+body.access-locked > header,body.access-locked > main{display:none!important}
+#accessGate{min-height:100vh;display:grid;place-items:center;padding:20px}
+#unlockForm{width:100%;max-width:420px}
+input[type="password"]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);margin:8px 0 14px}
+.vehicle-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.plate-badge{display:inline-block;max-width:70%;overflow-wrap:anywhere;border:2px solid var(--text);border-radius:7px;padding:6px 10px;font-size:18px;font-weight:850;letter-spacing:1.5px;background:var(--soft);color:var(--text);text-align:center}
+.plate-editor{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px}
+.plate-editor label{display:block;margin-bottom:6px}
+.plate-editor .btn{margin-top:8px}
+.numeric-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
+.numeric-pad button{font-size:23px;min-height:48px}
+#unlockForm>.btn{margin:5px 4px 5px 0}
+#recoveryForm{width:100%;max-width:420px}
+#recoveryReveal{font-family:monospace;font-size:19px;overflow-wrap:anywhere;user-select:all;background:var(--soft);padding:14px;border-radius:10px;margin-top:12px}
+.recovery-settings{margin-top:20px;border-top:1px solid var(--line);padding-top:8px}
+#accessGate{box-sizing:border-box;min-height:100dvh;padding:24px 16px;background:radial-gradient(ellipse at top,var(--soft),var(--bg) 65%)}
+#unlockForm,#recoveryForm{max-width:400px;padding:28px;border-radius:24px;box-shadow:0 16px 48px rgba(0,0,0,.12);margin:0}
+.access-symbol{font-size:28px;width:58px;height:58px;display:grid;place-items:center;background:var(--soft);border:1px solid var(--line);border-radius:18px;margin:0 auto 16px}
+#accessTitle,#recoveryForm h2{text-align:center;margin:0 0 8px;font-size:26px}
+.access-subtitle{text-align:center;color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 22px}
+#unlockPassword{text-align:center;font-size:24px;letter-spacing:6px;height:56px}
+.numeric-pad{gap:10px;margin:8px 0 18px}.numeric-pad button{min-height:54px;font-size:24px;border-radius:14px}
+#unlockForm #unlockButton,#recoveryForm #resetSubmit{width:100%;margin:0;padding:14px}
+#unlockForm #forgotPassword,#recoveryForm #cancelRecovery{width:100%;margin:12px 0 0;background:transparent;border:0;color:var(--accent)}
+@media(max-height:700px){#accessGate{padding:12px}#unlockForm,#recoveryForm{padding:20px}.access-symbol{margin-bottom:8px}.numeric-pad button{min-height:44px}}
 </style>
 </head>
-<body>
+<body class="access-locked">
+<section id="accessGate" role="dialog" aria-modal="true" aria-labelledby="accessTitle">
+ <form id="unlockForm" class="panel">
+  <div class="access-symbol" aria-hidden="true">🔒</div><h1 id="accessTitle">Mis documentos</h1><p class="access-subtitle">Ingresa tu PIN para ver tus documentos.</p>
+  <label for="unlockPassword">Clave de acceso</label>
+  <input id="unlockPassword" inputmode="numeric" type="password" required autocomplete="current-password">
+  <div id="numericPad" class="numeric-pad" aria-label="Teclado numérico"><button type="button" class="btn secondary" data-key="1" aria-label="1">1</button><button type="button" class="btn secondary" data-key="2" aria-label="2">2</button><button type="button" class="btn secondary" data-key="3" aria-label="3">3</button><button type="button" class="btn secondary" data-key="4" aria-label="4">4</button><button type="button" class="btn secondary" data-key="5" aria-label="5">5</button><button type="button" class="btn secondary" data-key="6" aria-label="6">6</button><button type="button" class="btn secondary" data-key="7" aria-label="7">7</button><button type="button" class="btn secondary" data-key="8" aria-label="8">8</button><button type="button" class="btn secondary" data-key="9" aria-label="9">9</button><button type="button" class="btn secondary" data-key="clear" aria-label="Borrar todo">C</button><button type="button" class="btn secondary" data-key="0" aria-label="0">0</button><button type="button" class="btn secondary" data-key="delete" aria-label="Borrar último dígito">⌫</button></div>
+<button id="unlockButton" class="btn" type="submit">Ingresar</button>
+  <button id="forgotPassword" type="button" class="btn secondary small">Olvidé mi clave</button>
+<p id="unlockStatus" class="help" role="status"></p>
+ </form>
+<form id="recoveryForm" class="panel" hidden>
+ <div class="access-symbol" aria-hidden="true">🔑</div><h2>Recuperar acceso</h2><p class="access-subtitle">Usa tu código de recuperación para crear un nuevo PIN.</p>
+ <label for="recoveryCode">Código de recuperación</label><input id="recoveryCode" type="text" required autocomplete="off" spellcheck="false">
+ <label for="resetPassword">Nuevo PIN (6 a 12 números)</label><input id="resetPassword" type="password" minlength="6" required autocomplete="new-password" inputmode="numeric" pattern="[0-9]{6,12}" maxlength="12">
+ <label for="resetConfirm">Repetir PIN</label><input id="resetConfirm" type="password" minlength="6" required autocomplete="new-password" inputmode="numeric" pattern="[0-9]{6,12}" maxlength="12">
+ <button id="resetSubmit" class="btn" type="submit">Restablecer clave</button><button id="cancelRecovery" class="btn secondary" type="button">← Volver al ingreso</button>
+ <p id="recoveryMessage" class="help" role="status"></p>
+ </form>
+</section>
+<script id="accessData" type="application/json">null</script>
+
 <header>
   <button id="backBtn" class="icon-btn" onclick="goBack()" aria-label="Volver">←</button>
   <div class="header-text">
@@ -145,6 +196,23 @@ textarea{min-height:74px;resize:vertical}
 </main>
 
 <main id="managerScreen" class="screen">
+<section class="panel">
+ <h2>🔒 Clave de acceso</h2>
+ <form id="passwordForm" class="form-grid">
+  <div class="field full" id="currentPasswordField" hidden><label for="currentPassword">Clave actual</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+  <div class="field"><label for="newPassword">Nuevo PIN (6 a 12 números)</label><input id="newPassword" type="password" minlength="6" required autocomplete="new-password" inputmode="numeric" pattern="[0-9]{6,12}" maxlength="12"></div>
+  <div class="field"><label for="confirmPassword">Repetir PIN</label><input id="confirmPassword" type="password" minlength="6" required autocomplete="new-password" inputmode="numeric" pattern="[0-9]{6,12}" maxlength="12"></div>
+  <div class="field full"><button id="savePassword" class="btn" type="submit">Guardar clave</button><div id="passwordStatus" class="help" role="status"></div></div>
+ </form>
+ <div class="recovery-settings">
+ <h3>Recuperación de clave</h3><p id="recoveryInfo" class="help" role="status"></p>
+ <label for="recoveryCurrent">Confirma tu clave actual</label><input id="recoveryCurrent" type="password" autocomplete="current-password">
+ <button id="generateRecovery" type="button" class="btn secondary">Generar código de recuperación</button>
+ <div id="recoveryReveal" hidden></div>
+ </div>
+ <p class="help">Puedes recuperar el acceso con un código generado previamente. Este bloqueo oculta la pantalla; no cifra los documentos. En HTML, guarda también una copia con el botón de exportar para conservar la clave fuera de este navegador.</p>
+</section>
+
   <div class="manage-head">
     <div>
       <h1>Gestionar vehículos</h1>
@@ -173,6 +241,10 @@ textarea{min-height:74px;resize:vertical}
       <div class="field full">
         <label for="newDescription">Descripción</label>
         <input id="newDescription" type="text" placeholder="Ej.: SOAP, permiso, revisión y padrón">
+      </div>
+      <div class="field full">
+        <label for="newPlate">Patente (opcional)</label>
+        <input id="newPlate" type="text" maxlength="15" placeholder="Ej.: ABCD-12" autocapitalize="characters" spellcheck="false">
       </div>
       <div class="field full">
         <label for="newFiles">Documentos</label>
@@ -229,7 +301,8 @@ function renderHome(){
     card.className = "choice";
     card.onclick = () => openVehicle(v.id);
     card.innerHTML = `
-      <div class="icon">${escapeHtml(v.icon || "🚗")}</div>
+      <div class="vehicle-card-top"><div class="icon">${escapeHtml(v.icon || "🚗")}</div>
+      ${v.plate ? '<span class="plate-badge" aria-label="Patente '+escapeHtml(v.plate)+'">'+escapeHtml(v.plate)+'</span>' : ''}</div>
       <div class="name">${escapeHtml(v.name)}</div>
       <div class="meta">${escapeHtml(v.description || (v.documents.length + " documento(s)"))}</div>
       <div class="open">Ver documentos →</div>`;
@@ -355,12 +428,14 @@ async function addVehicle(){
     id: uid("veh"),
     name,
     icon,
+    plate: document.getElementById("newPlate").value.trim().toUpperCase(),
     description: desc || `${docs.length} documento(s)`,
     documents: docs
   });
   document.getElementById("newName").value = "";
   document.getElementById("newDescription").value = "";
   document.getElementById("newFiles").value = "";
+  document.getElementById("newPlate").value = "";
   renderHome();
   renderManager();
   alert("Vehículo agregado. Cuando termines, pulsa “Guardar cambios en un nuevo HTML”.");
@@ -385,6 +460,11 @@ function renderManager(){
       </div>
       <button type="button" class="btn secondary small toggle-details" aria-expanded="false" style="margin-top:10px">Mostrar detalles ▾</button>
       <div class="vehicle-details" hidden>
+      <div class="plate-editor">
+        <label>Patente<input class="plate-input" type="text" maxlength="15" placeholder="Ej.: ABCD-12" autocapitalize="characters" spellcheck="false" value="${escapeHtml(v.plate || '')}"></label>
+        <button type="button" class="btn secondary small save-plate">Guardar patente</button>
+        <div class="help plate-status" role="status"></div>
+      </div>
       <div class="actions">
         <button class="btn secondary small edit-info">Editar datos</button>
         <button class="btn secondary small add-docs">Agregar documentos</button>
@@ -395,6 +475,12 @@ function renderManager(){
       <input class="file-replace" type="file" multiple accept="application/pdf,image/*" style="display:none">
       <div class="docs-list"></div>
       </div>`;
+    wrap.querySelector(".save-plate").onclick = () => {
+      const input=wrap.querySelector(".plate-input");
+      v.plate=input.value.trim().toUpperCase();input.value=v.plate;
+      renderHome();
+      wrap.querySelector(".plate-status").textContent=window.AndroidApp ? 'Patente actualizada.' : 'Patente actualizada. Guarda una nueva copia HTML para conservar el cambio.';
+    };
     const details = wrap.querySelector(".vehicle-details");
     const toggle = wrap.querySelector(".toggle-details");
     details.id = uid("vehicle-details");
@@ -470,6 +556,15 @@ function renderManager(){
 function saveAsNewHtml(){
   const storeText = JSON.stringify(appData).replace(/</g,"\\u003c");
   const clone = document.documentElement.cloneNode(true);
+  clone.querySelector('body').classList.add('access-locked');
+  clone.querySelector('#accessGate').hidden=false;
+  clone.querySelector('#recoveryReveal').textContent='';
+  clone.querySelector('#recoveryReveal').hidden=true;
+  clone.querySelector('#recoveryForm').hidden=true;clone.querySelector('#unlockForm').hidden=false;
+  clone.querySelector('#recoveryCode').value='';
+  clone.querySelector('#recoveryCode').removeAttribute('value');
+  clone.querySelector('#accessData').textContent=JSON.stringify(accessConfig);
+  clone.querySelectorAll('input[type="password"]').forEach(e=>{e.value='';e.removeAttribute('value');});
   const store = clone.querySelector("#vehicleDataStore");
   store.textContent = storeText;
 
@@ -497,7 +592,9 @@ function saveAsNewHtml(){
 }
 function applyTheme(mode){
   const dark = mode === "dark";
+  document.documentElement.classList.toggle("dark", dark);
   document.body.classList.toggle("dark", dark);
+  if(window.AndroidApp && AndroidApp.setTheme) AndroidApp.setTheme(dark);
   const b = document.getElementById("themeBtn");
   b.textContent = dark ? "☀️" : "🌙";
   b.title = dark ? "Modo claro" : "Modo oscuro";
@@ -517,7 +614,133 @@ function toggleTheme(){
   renderHome();
 })();
 </script>
+<script>
+let accessConfig = null;
+let accessEpoch = 0;
+const accessKey = 'vehiculos-access-v1';
+const byId = id => document.getElementById(id);
+function setLocked(locked){
+  document.body.classList.toggle('access-locked',locked);
+  byId('accessGate').hidden=!locked;
+  document.querySelectorAll('body > header, body > main').forEach(e=>e.inert=locked);
+  if(locked){accessEpoch++;byId('unlockPassword').value='';if(typeof clearRecoverySecrets==='function')clearRecoverySecrets();}
+}
+function lockApp(){if(accessConfig)setLocked(true);}
+function readAccess(){
+  const saved=window.AndroidApp ? AndroidApp.loadAccess() : localStorage.getItem(accessKey);
+  return JSON.parse(saved || byId('accessData').textContent || 'null');
+}
+async function passwordDigest(password,salt){
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:Uint8Array.from(atob(salt),c=>c.charCodeAt(0)),iterations:210000,hash:'SHA-256'},key,256);
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+function accessStatus(){
+  byId('currentPasswordField').hidden=!accessConfig;
+  byId('passwordStatus').textContent=accessConfig?'Clave activada. Se pedirá al volver a entrar.':'Todavía no hay una clave configurada.';
+}
+byId('unlockForm').onsubmit=async e=>{
+  e.preventDefault();const epoch=accessEpoch;const button=byId('unlockButton');button.disabled=true;
+  try{
+    const value=await passwordDigest(byId('unlockPassword').value,accessConfig.salt);
+    if(epoch!==accessEpoch)return;
+    if(value!==accessConfig.hash){byId('unlockStatus').textContent='Clave incorrecta.';return;}
+    byId('unlockStatus').textContent='';byId('unlockPassword').value='';setLocked(false);
+  }catch(err){byId('unlockStatus').textContent='No se pudo comprobar la clave. Usa un navegador actualizado.';}
+  finally{button.disabled=false;}
+};
+byId('passwordForm').onsubmit=async e=>{
+  e.preventDefault();const button=byId('savePassword');button.disabled=true;const epoch=accessEpoch;
+  try{
+    const password=byId('newPassword').value;
+    if(!/^[0-9]{6,12}$/.test(password))throw Error('El PIN debe tener entre 6 y 12 números, sin letras.');
+    if(password!==byId('confirmPassword').value)throw Error('Las claves nuevas no coinciden.');
+    if(accessConfig && await passwordDigest(byId('currentPassword').value,accessConfig.salt)!==accessConfig.hash)throw Error('La clave actual no es correcta.');
+    const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+    const next={...accessConfig,pinOnly:true,salt,hash:await passwordDigest(password,salt)};
+    if(epoch!==accessEpoch)throw Error('Vuelve a ingresar y repite el cambio de clave.');
+    const encoded=JSON.stringify(next);
+    if(window.AndroidApp){if(!AndroidApp.saveAccess(encoded))throw Error('No se pudo guardar la clave.');}
+    else{localStorage.setItem(accessKey,encoded);if(localStorage.getItem(accessKey)!==encoded)throw Error('No se pudo guardar la clave.');}
+    accessConfig=next;byId('accessData').textContent=encoded;byId('passwordForm').reset();accessStatus();
+    byId('passwordStatus').textContent='Clave guardada. En HTML, exporta una copia para llevar la clave a otro navegador o dispositivo.';
+  }catch(err){byId('passwordStatus').textContent=err.message || 'No se pudo guardar la clave.';}
+  finally{button.disabled=false;}
+};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)lockApp();});
+window.addEventListener('pagehide',lockApp);
+window.addEventListener('pageshow',()=>{if(accessConfig)lockApp();});
+try{accessConfig=readAccess();if(accessConfig && (!accessConfig.salt || !accessConfig.hash))throw Error();accessStatus();setLocked(!!accessConfig);}
+catch(err){setLocked(true);byId('unlockStatus').textContent='No se pudo leer la configuración de acceso. Reabre el archivo en el navegador donde guardaste la clave.';}
+
+</script>
+<script>
+function persistAccess(next){
+ const encoded=JSON.stringify(next);
+ if(window.AndroidApp){if(!AndroidApp.saveAccess(encoded))throw Error('No se pudo guardar la configuración.');}
+ else{localStorage.setItem(accessKey,encoded);if(localStorage.getItem(accessKey)!==encoded)throw Error('No se pudo guardar la configuración.');}
+ accessConfig=next;byId('accessData').textContent=encoded;
+}
+function recoveryStatus(){
+ byId('recoveryInfo').textContent=accessConfig?.recoveryHash?'Código de recuperación activado. Generar otro invalida el anterior.':'Aún no tienes un código de recuperación. Genéralo y guárdalo fuera de esta aplicación.';
+}
+function clearRecoverySecrets(){
+ for(const id of ['recoveryCurrent','recoveryCode','resetPassword','resetConfirm'])byId(id).value='';
+ byId('recoveryReveal').textContent='';byId('recoveryReveal').hidden=true;
+}
+byId('numericPad').onclick=e=>{
+ const key=e.target.closest('button')?.dataset.key;if(!key)return;
+ const field=byId('unlockPassword');
+ if(key==='delete')field.value=field.value.slice(0,-1);
+ else if(key==='clear')field.value='';
+ else if(!accessConfig?.pinOnly || field.value.length<12)field.value+=key;
+};
+
+byId('forgotPassword').onclick=()=>{
+ byId('recoveryForm').hidden=false;byId('unlockForm').hidden=true;byId('unlockPassword').value='';
+ byId('recoveryMessage').textContent=accessConfig?.recoveryHash?'Ingresa el código que guardaste al activar la recuperación.':'No hay un código de recuperación configurado. Necesitas ingresar con tu clave actual y generarlo en Gestionar.';
+ byId('resetSubmit').disabled=!accessConfig?.recoveryHash;
+};
+byId('cancelRecovery').onclick=()=>{byId('recoveryForm').hidden=true;byId('unlockForm').hidden=false;clearRecoverySecrets();};
+byId('generateRecovery').onclick=async()=>{
+ const button=byId('generateRecovery');button.disabled=true;const epoch=accessEpoch;
+ try{
+  if(!accessConfig)throw Error('Primero configura una clave de acceso.');
+  if(await passwordDigest(byId('recoveryCurrent').value,accessConfig.salt)!==accessConfig.hash)throw Error('La clave actual no es correcta.');
+  const code=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+  const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+  const hash=await passwordDigest(code,salt);
+  if(epoch!==accessEpoch)throw Error('Vuelve a ingresar para configurar la recuperación.');
+  persistAccess({...accessConfig,recoverySalt:salt,recoveryHash:hash});
+  byId('recoveryCurrent').value='';byId('recoveryReveal').textContent=code.match(/.{4}/g).join('-');byId('recoveryReveal').hidden=false;
+  byId('recoveryInfo').textContent='Copia este código y guárdalo en un lugar seguro. Solo se muestra ahora. En HTML exporta una nueva copia para incluir la recuperación.';
+ }catch(err){byId('recoveryInfo').textContent=err.message;}
+ finally{button.disabled=false;}
+};
+byId('recoveryForm').onsubmit=async e=>{
+ e.preventDefault();const button=byId('resetSubmit');button.disabled=true;const epoch=accessEpoch;
+ try{
+  if(!accessConfig?.recoveryHash)throw Error('No hay recuperación configurada.');
+  const code=byId('recoveryCode').value.replace(/[\s-]/g,'').toUpperCase();
+  if(!/^[A-F0-9]{32}$/.test(code) || await passwordDigest(code,accessConfig.recoverySalt)!==accessConfig.recoveryHash)throw Error('Código de recuperación incorrecto.');
+  const password=byId('resetPassword').value;
+  if(!/^[0-9]{6,12}$/.test(password))throw Error('El PIN debe tener entre 6 y 12 números, sin letras.');
+  if(password!==byId('resetConfirm').value)throw Error('Las claves no coinciden.');
+  const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+  const next={pinOnly:true,salt,hash:await passwordDigest(password,salt)};
+  if(epoch!==accessEpoch)throw Error('Repite la recuperación para continuar.');
+  persistAccess(next);clearRecoverySecrets();byId('recoveryForm').hidden=true;byId('unlockForm').hidden=false;
+  accessStatus();recoveryStatus();
+  byId('unlockStatus').textContent='Clave restablecida. Ingresa con la nueva clave y genera otro código en Gestionar. El anterior ya no sirve.';
+ }catch(err){byId('recoveryMessage').textContent=err.message;}
+ finally{button.disabled=false;}
+};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clearRecoverySecrets();});
+recoveryStatus();
+
+</script>
 </body>
 </html>
+
 
 
